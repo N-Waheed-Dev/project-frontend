@@ -1,0 +1,55 @@
+import { User } from "lucide-react";
+import { Link, useLocation } from "react-router";
+import Button from "./Button";
+import { useContext } from "react";
+import { GlobalStore } from "../../stores/MainStore";
+
+const Navbar = () => {
+  // Hooks
+  const { token, setToken, setUserData } = useContext(GlobalStore);
+  const location = useLocation();
+
+  // Logout
+  function logout() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("userData");
+    setToken(null);
+    setUserData(null)
+  }
+  return (
+    <header className="bg-sage-secondary/30 border border-sage-secondary/50 shadow-2xl py-3 rounded-lg mt-5">
+      <div className="container flex items-center justify-between">
+        <Link to={"/"} className="text-2xl font-bold">
+          Home
+        </Link>
+
+        <div className="flex gap-2">
+          {token ? (
+            <>
+              <Link to={"/profile"}>
+                <User className="border-4 border-sage-secondary hover:border-sage-primary duration-300 rounded-full w-12 h-12 p-2 " />
+              </Link>
+
+              <Button handleClick={logout}>Logout</Button>
+            </>
+          ) : (
+            <>
+              {location.pathname == "/register" && (
+                <Link to={"/login"}>
+                  <Button>login</Button>
+                </Link>
+              )}
+              {location.pathname == "/login" && (
+                <Link to={"/register"}>
+                  <Button>Register</Button>
+                </Link>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Navbar;
